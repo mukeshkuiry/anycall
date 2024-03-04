@@ -35,6 +35,7 @@ require (
 require (
 	github.com/gofrs/uuid v4.0.0+incompatible // indirect
 	github.com/gomodule/redigo v1.8.4 // indirect
+	github.com/gorilla/mux v1.8.1
 	github.com/gorilla/websocket v1.5.1 // indirect
 	github.com/pion/webrtc/v3 v3.2.28
 	github.com/rs/cors v1.10.1
