@@ -1,5 +1,6 @@
 "use client";
 import React, { FC, useCallback, useEffect, useMemo } from "react";
+import { RTCPeerConn } from "./RTCPeerConn";
 
 type Props = {
   children: React.ReactNode;
@@ -43,23 +44,24 @@ export const WebRTCProvider: FC<Props> = ({ children }: Props) => {
   const [remoteStream, setRemoteStream] = React.useState<MediaStream | null>(
     null
   );
+  const [peer, SetPeer] = React.useState<RTCPeerConnection | null>(null);
 
-  const peer = useMemo(() => {
-    return new RTCPeerConnection({
-      iceServers: [
-        {
-          urls: "stun:stun.l.google.com:19302",
-        },
-      ],
-    });
+  useEffect(() => {
+    const peer = RTCPeerConn();
+    SetPeer(peer);
+    return () => {
+      peer.close();
+    };
   }, []);
 
   const createOffer = useCallback(async () => {
     try {
-      const offer = await peer.createOffer();
-      console.log("Offer created:" + offer);
-      await peer.setLocalDescription(offer);
-      return offer;
+      if (peer) {
+        const offer = await peer.createOffer();
+        console.log("Offer created:" + offer);
+        await peer.setLocalDescription(offer);
+        return offer;
+      }
     } catch (error) {
       console.error("Error creating offer: " + error);
     }
@@ -67,10 +69,12 @@ export const WebRTCProvider: FC<Props> = ({ children }: Props) => {
 
   const createAnswer = async (offer: RTCSessionDescriptionInit) => {
     try {
-      await peer.setRemoteDescription(offer);
-      const answer = await peer.createAnswer();
-      await peer.setLocalDescription(answer);
-      return answer;
+      if (peer) {
+        await peer.setRemoteDescription(offer);
+        const answer = await peer.createAnswer();
+        await peer.setLocalDescription(answer);
+        return answer;
+      }
     } catch (error) {
       console.error("Error creating answer: " + error);
     }
@@ -78,7 +82,9 @@ export const WebRTCProvider: FC<Props> = ({ children }: Props) => {
 
   const setRemoteDescription = async (answer: RTCSessionDescriptionInit) => {
     try {
-      await peer.setRemoteDescription(answer);
+      if (peer) {
+        await peer.setRemoteDescription(answer);
+      }
     } catch (error) {
       console.error("Error setting remote description: " + error);
     }
@@ -86,7 +92,7 @@ export const WebRTCProvider: FC<Props> = ({ children }: Props) => {
 
   const sendTracks = async (stream: MediaStream) => {
     stream.getTracks().forEach((track) => {
-      peer.addTrack(track, stream);
+      peer?.addTrack(track, stream);
     });
   };
 
@@ -96,10 +102,10 @@ export const WebRTCProvider: FC<Props> = ({ children }: Props) => {
   };
 
   useEffect(() => {
-    peer.addEventListener("track", handleTrackEvent);
+    peer?.addEventListener("track", handleTrackEvent);
 
     return () => {
-      peer.removeEventListener("track", handleTrackEvent);
+      peer?.removeEventListener("track", handleTrackEvent);
     };
   }, [peer]);
 
