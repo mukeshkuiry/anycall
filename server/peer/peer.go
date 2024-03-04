@@ -78,7 +78,6 @@ func handlePeerMessages(conn *websocket.Conn) {
 			break
 		}
 
-		log.Println("Message received:", message)
 		// Implement a function to handle peer messages
 		if message.Type == "offer" {
 			handleSendOffer(conn, message)
