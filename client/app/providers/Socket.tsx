@@ -69,7 +69,7 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
 
   const handleConnection = useCallback(() => {
     try {
-      const newSocket = new WebSocket("ws://localhost:8000/peer");
+      const newSocket = new WebSocket("wss://anycall.onrender.com/peer");
       newSocket.onerror = (error) => {
         console.error("WebSocket error:", error);
       };
