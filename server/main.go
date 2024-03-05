@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/mukeshkuiry/anycall/group"
 	"github.com/mukeshkuiry/anycall/peer"
 )
 
@@ -12,6 +13,7 @@ func main() {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/peer", peer.HandlePeerConnection)
+	r.HandleFunc("/group", group.HandleGroupConnection)
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain")
 		w.WriteHeader(http.StatusOK)

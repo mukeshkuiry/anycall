@@ -61,6 +61,7 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
 
   const {
     peer,
+    setPeer,
     createOffer,
     createAnswer,
     setRemoteDescription,
@@ -69,7 +70,7 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
 
   const handleConnection = useCallback(() => {
     try {
-      const newSocket = new WebSocket("wss://anycall.onrender.com/peer");
+      const newSocket = new WebSocket("ws://localhost:8000/peer");
       newSocket.onerror = (error) => {
         console.error("WebSocket error:", error);
       };
@@ -153,6 +154,17 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
     [createAnswer, randomId, socket]
   );
 
+  const handleCloseConnection = useCallback(() => {
+    if (socket && peer) {
+      socket.close();
+      setSocket(null);
+      peer.close();
+      setPeer(null);
+      window.location.reload();
+      console.log("Connection closed");
+    }
+  }, [socket, peer, setPeer]);
+
   const handleMessages = useCallback(
     async (event: MessageEvent) => {
       if (socket) {
@@ -168,10 +180,24 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
           handleReceiveOffer(JSON.parse(data.content));
         } else if (data.type === "answer") {
           handleReceiveAnswer(JSON.parse(data.content));
+        } else if (data.type === "leave") {
+          if (peer) peer.close();
+          setJoined(false);
+          setPeerJoined(false);
+          setICanSendOffer(false);
+          setMessages([]);
+          handleCloseConnection();
         }
       }
     },
-    [handleCreateOffer, handleReceiveAnswer, handleReceiveOffer, socket]
+    [
+      handleCloseConnection,
+      handleCreateOffer,
+      handleReceiveAnswer,
+      handleReceiveOffer,
+      peer,
+      socket,
+    ]
   );
 
   useEffect(() => {
@@ -181,6 +207,17 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
       };
     }
   }, [handleMessages, socket, socket?.onmessage]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.onclose = () => {
+        console.log("Socket closed");
+      };
+      socket.onerror = (error) => {
+        console.error("WebSocket error:", error);
+      };
+    }
+  }, [socket]);
 
   const value: ISocketContext = {
     socket,

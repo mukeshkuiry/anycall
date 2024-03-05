@@ -8,6 +8,7 @@ type Props = {
 
 interface IWebRTCContext {
   peer: RTCPeerConnection | null;
+  setPeer: (peer: RTCPeerConnection | null) => void;
   createOffer: () => Promise<RTCSessionDescriptionInit | undefined>;
   createAnswer: (
     offer: RTCSessionDescriptionInit
@@ -19,6 +20,7 @@ interface IWebRTCContext {
 
 const defaultWebRTCContext: IWebRTCContext = {
   peer: null,
+  setPeer: () => {},
   createOffer: async () => {
     return undefined;
   },
@@ -53,6 +55,19 @@ export const WebRTCProvider: FC<Props> = ({ children }: Props) => {
       peer.close();
     };
   }, []);
+
+  useEffect(() => {
+    if (peer) {
+      peer.onconnectionstatechange = (event) => {
+        if (peer.connectionState === "connected") {
+          console.log("Connected");
+        }
+        if (peer.connectionState === "disconnected") {
+          console.log("Disconnected");
+        }
+      };
+    }
+  }, [peer]);
 
   const createOffer = useCallback(async () => {
     try {
@@ -111,6 +126,7 @@ export const WebRTCProvider: FC<Props> = ({ children }: Props) => {
 
   const value: IWebRTCContext = {
     peer,
+    setPeer: SetPeer,
     createOffer,
     createAnswer,
     setRemoteDescription,

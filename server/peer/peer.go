@@ -14,9 +14,12 @@ import (
 var mu sync.Mutex
 
 func HandlePeerConnection(w http.ResponseWriter, r *http.Request) {
+
 	conn, err := models.Upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		w.Write([]byte("Error occurred"))
+		return
 	}
 
 	// Implement a function to find or create a peer connection room
@@ -42,6 +45,7 @@ func HandlePeerConnection(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Implement a function to handle peer messages
+
 	handlePeerMessages(conn)
 
 }
@@ -74,7 +78,8 @@ func handlePeerMessages(conn *websocket.Conn) {
 		err := conn.ReadJSON(&message)
 		if err != nil {
 			fmt.Println("Error reading json.")
-			log.Println(err)
+			log.Println("close here:", err)
+			handleCloseConn(conn)
 			break
 		}
 
@@ -150,4 +155,21 @@ func handleSendAnswer(conn *websocket.Conn, message models.Message) {
 			}
 		}
 	}
+}
+
+func handleCloseConn(conn *websocket.Conn) {
+	room := findPeerConnectionRoom(conn)
+
+	// send a message to the room that the client has left
+	msg := &models.Message{
+		Type:     "leave",
+		SenderID: "",
+		Content:  "",
+	}
+	handlePeerMessage(conn, *msg)
+	delete(room.Clients, conn)
+	if len(room.Clients) == 0 {
+		delete(models.PeerConnectionRooms, room.ID)
+	}
+	conn.Close()
 }

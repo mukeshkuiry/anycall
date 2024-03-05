@@ -15,3 +15,5 @@ var Upgrader = websocket.Upgrader{
 }
 
 var PeerConnectionRooms = make(map[string]*Room)
+
+var GroupConnectionRooms = make(map[string]*Room)
