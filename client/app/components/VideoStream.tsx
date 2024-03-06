@@ -9,9 +9,6 @@ const VideoStream = (props: Props) => {
   const { joined } = useSocket();
 
   const { sendTracks, remoteStream } = useWebRTC();
-  const [adjustedTracks, setAdjustedTracks] = useState<MediaStream | null>(
-    null
-  );
 
   const [myStream, setMyStream] = useState<MediaStream | null>(null);
   const [videoQuality, setVideoQuality] = useState<"low" | "medium" | "high">(
@@ -48,26 +45,14 @@ const VideoStream = (props: Props) => {
           sendTracks(stream);
           setMyStream(stream);
         });
-
-      if (remoteStream) {
-        // reduce video quality of remote stream
-        const newTrack = remoteStream;
-        newTrack.getVideoTracks().forEach((track) => {
-          track.applyConstraints({
-            width: { max: videoQualityValue },
-            height: { max: videoQualityValue },
-          });
-        });
-        setAdjustedTracks(newTrack);
-      }
     }
   }, [joined, remoteStream, sendTracks, videoQuality, videoQualityValue]);
   return (
     <div className="flex flex-col md:w-1/3 justify-between items-center gap-4">
       <div className="h-full w-full rounded-xl">
-        {adjustedTracks && (
+        {remoteStream && (
           <ReactPlayer
-            url={adjustedTracks}
+            url={remoteStream}
             playing
             width="100%"
             height="100%"
