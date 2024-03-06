@@ -8,19 +8,18 @@ type Props = {
 
 const VideoStreamPhone = ({ myStream, remoteStream }: Props) => {
   return (
-    <div className="flex flex-col md:w-1/3 justify-between items-center gap-4">
-      <div className="h-[45vh] w-full backdrop-blur-sm bg-[#ffffff10] rounded-xl overflow-hidden">
-        {remoteStream && (
-          <ReactPlayer
-            playing
-            url={remoteStream}
-            width="100%"
-            height="100%"
-            controls
-          />
-        )}
-      </div>
-      <div className="w-full h-[45vh] backdrop-blur-sm bg-[#ffffff10] rounded-xl overflow-hidden">
+    <div className="h-[calc(100vh-4rem)] w-full flex justify-center items-center relative">
+      {remoteStream && (
+        <ReactPlayer
+          playing
+          url={remoteStream}
+          width={"100%"}
+          height={"100%"}
+          controls
+        />
+      )}
+
+      <div className="absolute bottom-0 right-0 w-[40vw]">
         {myStream && (
           <ReactPlayer
             playing
