@@ -10,6 +10,7 @@ import React, {
   useState,
 } from "react";
 import { useWebRTC } from "./WebRTC";
+import socketUrl from "../utils/socketURL";
 
 interface SocketProviderProps {
   children: ReactNode;
@@ -70,7 +71,7 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
 
   const handleConnection = useCallback(() => {
     try {
-      const newSocket = new WebSocket("ws://localhost:8000/peer");
+      const newSocket = new WebSocket(socketUrl);
       newSocket.onerror = (error) => {
         console.error("WebSocket error:", error);
       };
