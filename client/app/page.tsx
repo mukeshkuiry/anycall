@@ -27,7 +27,7 @@ export default function Home() {
       ) : (
         <div className="max-h-screen w-screen absolute flex bg-black md:px-32 md:py-12 py-6 px-4">
           <VideoStream />
-          <div className="hidden">
+          <div className="w-2/3 hidden">
             <ChatBox />
           </div>
         </div>

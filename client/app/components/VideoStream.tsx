@@ -14,6 +14,17 @@ const VideoStream = (props: Props) => {
   const [videoQuality, setVideoQuality] = useState<"low" | "medium" | "high">(
     "high"
   );
+  const [videoQualityValue, setVideoQualityValue] = useState<number>(300);
+
+  useEffect(() => {
+    if (videoQuality === "low") {
+      setVideoQualityValue(300);
+    } else if (videoQuality === "medium") {
+      setVideoQualityValue(1000);
+    } else {
+      setVideoQualityValue(1800);
+    }
+  }, [videoQuality]);
 
   useEffect(() => {
     if (joined) {
@@ -25,22 +36,12 @@ const VideoStream = (props: Props) => {
       const stream = navigator?.mediaDevices?.getUserMedia({
         video: {
           width: {
-            max:
-              videoQuality === "low"
-                ? 300
-                : videoQuality === "medium"
-                ? 1000
-                : 1800,
+            max: videoQualityValue,
           },
           height: {
-            max:
-              videoQuality === "low"
-                ? 300
-                : videoQuality === "medium"
-                ? 1000
-                : 1800,
+            max: videoQualityValue,
           },
-          aspectRatio: 0.75, // set 3:4
+          aspectRatio: 1.25, // set aspect ratio to 4:3
         },
         audio: true,
       });
@@ -54,17 +55,17 @@ const VideoStream = (props: Props) => {
         // reduce video quality of remote stream
         remoteStream.getVideoTracks().forEach((track) => {
           track.applyConstraints({
-            width: { max: 100 },
-            height: { max: 100 },
-            aspectRatio: 0.74,
+            width: { max: videoQualityValue },
+            height: { max: videoQualityValue },
+            aspectRatio: 1.25, // set aspect ratio to 4:3
           });
         });
       }
     }
-  }, [joined, remoteStream, sendTracks, videoQuality]);
+  }, [joined, remoteStream, sendTracks, videoQuality, videoQualityValue]);
   return (
-    <div className="flex flex-col md:w-1/3 justify-between items-center">
-      <div className="h-full w-full">
+    <div className="flex flex-col md:w-1/3 justify-between items-center gap-4">
+      <div className="h-full w-full rounded-xl">
         {remoteStream && (
           <ReactPlayer
             url={remoteStream}
@@ -72,10 +73,6 @@ const VideoStream = (props: Props) => {
             width="100%"
             height="100%"
             muted
-            style={{
-              transform: "rotateY(180deg)",
-              borderRadius: "1rem",
-            }}
           />
         )}
       </div>
@@ -87,10 +84,6 @@ const VideoStream = (props: Props) => {
             width="100%"
             height="100%"
             muted
-            style={{
-              transform: "rotateY(180deg)",
-              borderRadius: "1rem",
-            }}
           />
         )}
       </div>

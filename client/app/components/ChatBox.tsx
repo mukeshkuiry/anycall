@@ -39,7 +39,7 @@ const ChatBox = (props: Props) => {
   }, [messages]); // Include any dependency that triggers new messages
 
   return (
-    <div className="flex flex-col w-2/3  backdrop-blur-sm bg-[#ffffff10] p-4 ml-8 rounded-xl">
+    <div className="flex flex-col h-full backdrop-blur-sm bg-[#ffffff10] p-4 ml-8 rounded-xl">
       <div className="flex-grow overflow-y-auto p-8 " ref={chatBoxRef}>
         <div>
           {!peerJoined ? (
