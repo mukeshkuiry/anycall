@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <>
       {!joined ? (
-        <div className="flex justify-center absolute items-center h-screen w-screen bg-black">
+        <div className="flex justify-center absolute items-center h-screen max-h-screen w-screen bg-black">
           {/* <img
             className="w-screen h-screen relative top-0 left-0"
             src="/bg.jpg"
@@ -25,7 +25,7 @@ export default function Home() {
           <JoinCard />
         </div>
       ) : (
-        <div className="h-screen w-screen absolute flex bg-black md:px-32 md:py-12 py-6 px-4">
+        <div className="max-h-screen w-screen absolute flex bg-black md:px-32 md:py-12 py-6 px-4">
           <VideoStream />
           <div className="hidden">
             <ChatBox />

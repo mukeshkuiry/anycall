@@ -11,11 +11,37 @@ const VideoStream = (props: Props) => {
   const { sendTracks, remoteStream } = useWebRTC();
 
   const [myStream, setMyStream] = useState<MediaStream | null>(null);
+  const [videoQuality, setVideoQuality] = useState<"low" | "medium" | "high">(
+    "high"
+  );
 
   useEffect(() => {
     if (joined) {
+      // const stream = navigator?.mediaDevices?.getUserMedia({
+      //   video: true,
+      //   audio: true,
+      // });
+      // reduce video quality
       const stream = navigator?.mediaDevices?.getUserMedia({
-        video: true,
+        video: {
+          width: {
+            max:
+              videoQuality === "low"
+                ? 300
+                : videoQuality === "medium"
+                ? 1000
+                : 1800,
+          },
+          height: {
+            max:
+              videoQuality === "low"
+                ? 300
+                : videoQuality === "medium"
+                ? 1000
+                : 1800,
+          },
+          aspectRatio: 0.75, // set 3:4
+        },
         audio: true,
       });
       if (stream)
@@ -23,8 +49,19 @@ const VideoStream = (props: Props) => {
           sendTracks(stream);
           setMyStream(stream);
         });
+
+      if (remoteStream) {
+        // reduce video quality of remote stream
+        remoteStream.getVideoTracks().forEach((track) => {
+          track.applyConstraints({
+            width: { max: 100 },
+            height: { max: 100 },
+            aspectRatio: 0.74,
+          });
+        });
+      }
     }
-  }, [joined, sendTracks]);
+  }, [joined, remoteStream, sendTracks, videoQuality]);
   return (
     <div className="flex flex-col md:w-1/3 justify-between items-center">
       <div className="h-full w-full">
@@ -34,6 +71,7 @@ const VideoStream = (props: Props) => {
             playing
             width="100%"
             height="100%"
+            muted
             style={{
               transform: "rotateY(180deg)",
               borderRadius: "1rem",
@@ -48,6 +86,7 @@ const VideoStream = (props: Props) => {
             playing
             width="100%"
             height="100%"
+            muted
             style={{
               transform: "rotateY(180deg)",
               borderRadius: "1rem",
