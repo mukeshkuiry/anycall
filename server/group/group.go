@@ -26,7 +26,6 @@ func HandleGroupConnection(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-
 	// add client to room
 	models.GroupConnectionRooms[roomID].Clients[conn] = true
 

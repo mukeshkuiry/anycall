@@ -1,56 +1,39 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useWebRTC } from "../providers/WebRTC";
 import { useSocket } from "../providers/Socket";
 import ReactPlayer from "react-player";
 import VideoStreamPhone from "./VideoStreamPhone";
 
-type Props = {};
-
-const VideoStream = (props: Props) => {
+const VideoStream = () => {
   const { joined } = useSocket();
-
   const { sendTracks, remoteStream } = useWebRTC();
-
   const [myStream, setMyStream] = useState<MediaStream | null>(null);
-  // const [videoQuality, setVideoQuality] = useState<"low" | "medium" | "high">(
-  //   "high"
-  // );
-  // const [videoQualityValue, setVideoQualityValue] = useState<number>(300);
-
-  // useEffect(() => {
-  //   if (videoQuality === "low") {
-  //     setVideoQualityValue(300);
-  //   } else if (videoQuality === "medium") {
-  //     setVideoQualityValue(1000);
-  //   } else {
-  //     setVideoQualityValue(4800);
-  //   }
-  // }, [videoQuality]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (joined) {
-      const stream = navigator?.mediaDevices?.getUserMedia({
-        video: {
-          //   width: {
-          //     max: videoQualityValue,
-          //   },
-          //   height: {
-          //     max: videoQualityValue,
-          //   },
-          aspectRatio: 1.5, // set aspect ratio to 4:3
-        },
-        audio: true,
-      });
-      if (stream)
-        stream.then((stream) => {
-          sendTracks(stream);
-          setMyStream(stream);
+    const getMediaStream = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { aspectRatio: 1.5 },
+          audio: true,
         });
+        setMyStream(stream);
+        sendTracks(stream);
+      } catch (err) {
+        console.error("Error accessing media devices:", err);
+        setError("Failed to access media devices. Please check your settings.");
+      }
+    };
+
+    if (joined) {
+      getMediaStream();
     }
-  }, [joined, remoteStream, sendTracks]);
+  }, [joined, myStream, sendTracks]);
+
   return (
     <div className="w-full lg:w-[45%]">
-      <div className="hidden lg:flex flex-col justify-between items-center gap-4">
+      {error && <div className="text-red-500">{error}</div>}
+      <div className="hidden lg:flex flex-col justify-between items-center gap-4 rounded-xl overflow-hidden">
         <div className="h-[45vh] w-full backdrop-blur-sm bg-[#ffffff10] rounded-xl overflow-hidden">
           {remoteStream && (
             <ReactPlayer
@@ -60,6 +43,7 @@ const VideoStream = (props: Props) => {
               height="100%"
               controls
               muted
+              className="rounded-xl"
             />
           )}
         </div>
@@ -72,6 +56,7 @@ const VideoStream = (props: Props) => {
               width="100%"
               height="100%"
               muted
+              className="rounded-xl"
             />
           )}
         </div>
