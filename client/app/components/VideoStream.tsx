@@ -9,6 +9,9 @@ const VideoStream = (props: Props) => {
   const { joined } = useSocket();
 
   const { sendTracks, remoteStream } = useWebRTC();
+  const [adjustedTracks, setAdjustedTracks] = useState<MediaStream | null>(
+    null
+  );
 
   const [myStream, setMyStream] = useState<MediaStream | null>(null);
   const [videoQuality, setVideoQuality] = useState<"low" | "medium" | "high">(
@@ -28,11 +31,6 @@ const VideoStream = (props: Props) => {
 
   useEffect(() => {
     if (joined) {
-      // const stream = navigator?.mediaDevices?.getUserMedia({
-      //   video: true,
-      //   audio: true,
-      // });
-      // reduce video quality
       const stream = navigator?.mediaDevices?.getUserMedia({
         video: {
           width: {
@@ -41,7 +39,7 @@ const VideoStream = (props: Props) => {
           height: {
             max: videoQualityValue,
           },
-          aspectRatio: 1.25, // set aspect ratio to 4:3
+          aspectRatio: 1.5, // set aspect ratio to 4:3
         },
         audio: true,
       });
@@ -53,22 +51,23 @@ const VideoStream = (props: Props) => {
 
       if (remoteStream) {
         // reduce video quality of remote stream
-        remoteStream.getVideoTracks().forEach((track) => {
+        const newTrack = remoteStream;
+        newTrack.getVideoTracks().forEach((track) => {
           track.applyConstraints({
             width: { max: videoQualityValue },
             height: { max: videoQualityValue },
-            aspectRatio: 1.25, // set aspect ratio to 4:3
           });
         });
+        setAdjustedTracks(newTrack);
       }
     }
   }, [joined, remoteStream, sendTracks, videoQuality, videoQualityValue]);
   return (
     <div className="flex flex-col md:w-1/3 justify-between items-center gap-4">
       <div className="h-full w-full rounded-xl">
-        {remoteStream && (
+        {adjustedTracks && (
           <ReactPlayer
-            url={remoteStream}
+            url={adjustedTracks}
             playing
             width="100%"
             height="100%"

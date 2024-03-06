@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/websocket"
+
 	"github.com/mukeshkuiry/anycall/models"
 )
 
@@ -25,6 +26,7 @@ func HandleGroupConnection(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+
 	// add client to room
 	models.GroupConnectionRooms[roomID].Clients[conn] = true
 
@@ -41,6 +43,7 @@ func HandleGroupConnection(w http.ResponseWriter, r *http.Request) {
 		}
 		log.Println("Message received: ", string(msg))
 		// broadcast message to all clients in room
+
 		for client := range models.GroupConnectionRooms[roomID].Clients {
 			err := client.WriteMessage(websocket.TextMessage, msg)
 			if err != nil {
@@ -55,7 +58,4 @@ func HandleGroupConnection(w http.ResponseWriter, r *http.Request) {
 	defer conn.Close()
 }
 
-
 // design the group video call feature
-
-
