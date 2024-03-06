@@ -25,9 +25,9 @@ export default function Home() {
           <JoinCard />
         </div>
       ) : (
-        <div className="max-h-screen w-screen absolute flex bg-black md:px-32 md:py-12 py-6 px-4">
+        <div className="max-h-screen min-h-screen w-screen absolute flex bg-black md:px-32 md:py-12 py-6 px-4">
           <VideoStream />
-          <div className="w-2/3 hidden">
+          <div className="w-2/3">
             <ChatBox />
           </div>
         </div>

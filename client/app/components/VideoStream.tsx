@@ -15,6 +15,7 @@ const VideoStream = (props: Props) => {
     "high"
   );
   const [videoQualityValue, setVideoQualityValue] = useState<number>(300);
+  const [pauseVideo, setPauseVideo] = useState<boolean>(false);
 
   useEffect(() => {
     if (videoQuality === "low") {
@@ -22,12 +23,12 @@ const VideoStream = (props: Props) => {
     } else if (videoQuality === "medium") {
       setVideoQualityValue(1000);
     } else {
-      setVideoQualityValue(1800);
+      setVideoQualityValue(4800);
     }
   }, [videoQuality]);
 
   useEffect(() => {
-    if (joined) {
+    if (joined && !pauseVideo) {
       const stream = navigator?.mediaDevices?.getUserMedia({
         video: {
           width: {
@@ -42,33 +43,28 @@ const VideoStream = (props: Props) => {
       });
       if (stream)
         stream.then((stream) => {
-          sendTracks(stream);
+          !pauseVideo && sendTracks(stream);
           setMyStream(stream);
         });
     }
-  }, [joined, remoteStream, sendTracks, videoQuality, videoQualityValue]);
+  }, [
+    joined,
+    pauseVideo,
+    remoteStream,
+    sendTracks,
+    videoQuality,
+    videoQualityValue,
+  ]);
   return (
     <div className="flex flex-col md:w-1/3 justify-between items-center gap-4">
-      <div className="h-full w-full rounded-xl">
+      <div className="h-[45vh] w-full backdrop-blur-sm bg-[#ffffff10] rounded-xl overflow-hidden">
         {remoteStream && (
-          <ReactPlayer
-            url={remoteStream}
-            playing
-            width="100%"
-            height="100%"
-            muted
-          />
+          <ReactPlayer playing url={remoteStream} width="100%" height="100%" controls />
         )}
       </div>
-      <div className="w-full h-full">
+      <div className="w-full h-[45vh] backdrop-blur-sm bg-[#ffffff10] rounded-xl overflow-hidden">
         {myStream && (
-          <ReactPlayer
-            url={myStream}
-            playing
-            width="100%"
-            height="100%"
-            muted
-          />
+          <ReactPlayer playing url={myStream} controls width="100%" height="100%" />
         )}
       </div>
     </div>
