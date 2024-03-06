@@ -1,7 +1,6 @@
 // ChatBox.tsx
 import { useEffect, useRef, useState } from "react";
 import { useSocket } from "../providers/Socket";
-
 type Props = {};
 
 const ChatBox = (props: Props) => {
@@ -10,6 +9,7 @@ const ChatBox = (props: Props) => {
 
   const chatBoxRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const notificationRef = useRef<HTMLAudioElement>(null); // Reference to the audio element
 
   const { messages, randomId, sendMessage, peerJoined } = useSocket();
 
@@ -45,9 +45,28 @@ const ChatBox = (props: Props) => {
     scrollToBottom();
   }, [messages]); // Include any dependency that triggers new messages
 
+  useEffect(() => {
+    // Play notification sound when a new message is received
+    if (
+      messages.length > 0 &&
+      messages[messages.length - 1].senderId !== randomId
+    ) {
+      notificationRef.current?.play();
+    }
+  }, [messages, randomId]);
+
+  useEffect(() => {
+    // Play notification sound when someone joins
+    if (peerJoined) {
+      notificationRef.current?.play();
+    }
+  }, [peerJoined]);
+
   return (
     <div className="flex flex-col h-full backdrop-blur-sm bg-[#ffffff10] p-4 ml-8 rounded-xl">
-      <div className="flex-grow overflow-y-auto p-8" ref={chatBoxRef}>
+      <audio ref={notificationRef} src={"/notification.mp3"} />{" "}
+      {/* Notification sound */}
+      <div className="flex-grow overflow-y-auto p-8 custom-scrollbar" ref={chatBoxRef}>
         <div>
           {!peerJoined ? (
             <h1 className="text-xl text-yellow-500 text-center">
@@ -110,9 +129,7 @@ const ChatBox = (props: Props) => {
           Send
         </button>
       </div>
-      {error && (
-        <div className="text-red-500 text-sm text-center">{error}</div>
-      )}
+      {error && <div className="text-red-500 text-sm text-center">{error}</div>}
     </div>
   );
 };
