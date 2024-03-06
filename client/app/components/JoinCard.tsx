@@ -55,7 +55,7 @@ const JoinCard = (props: Props) => {
       <motion.button
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
-        className="bg-purple-500 text-white px-7 py-3 md:px-6 md:py-3 rounded-md shadow-md hover:bg-purple-600 mb-1 md:mb-3"
+        className="bg-purple-500 text-white px-7 py-3 md:px-6 md:py-3 rounded-md shadow-md hover:bg-purple-600 mb-2 md:mb-3"
         onClick={handleJoin}
       >
         Start Chat
