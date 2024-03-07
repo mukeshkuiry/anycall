@@ -57,6 +57,7 @@ const VideoStream = () => {
               width="100%"
               height="100%"
               className="rounded-xl"
+              muted
             />
           )}
         </div>
