@@ -12,7 +12,7 @@ const VideoStreamPhone = ({ myStream, remoteStream }: Props) => {
     window.location.reload();
   };
   return (
-    <div className="h-[calc(100vh-4rem)] w-full flex flex-col justify-between items-center relative bg-black">
+    <div className="h-[calc(100vh-8rem)] w-full flex flex-col justify-between items-center relative bg-black">
       <div className="h-full">
         {remoteStream ? (
           <ReactPlayer
