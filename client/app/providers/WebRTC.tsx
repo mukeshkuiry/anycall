@@ -1,5 +1,5 @@
 "use client";
-import React, { FC, useCallback, useEffect, useMemo } from "react";
+import React, { FC, useCallback, useEffect } from "react";
 import { RTCPeerConn } from "./RTCPeerConn";
 
 type Props = {
@@ -73,7 +73,7 @@ export const WebRTCProvider: FC<Props> = ({ children }: Props) => {
     try {
       if (peer) {
         const offer = await peer.createOffer();
-        console.log("Offer created:" + offer);
+        // console.log("Offer created:" + offer);
         await peer.setLocalDescription(offer);
         return offer;
       }
@@ -106,14 +106,15 @@ export const WebRTCProvider: FC<Props> = ({ children }: Props) => {
   };
 
   const sendTracks = async (stream: MediaStream) => {
+    console.log("No of tracks: " + stream.getTracks());
     stream.getTracks().forEach((track) => {
       peer?.addTrack(track, stream);
     });
   };
 
   const handleTrackEvent = (event: RTCTrackEvent) => {
-    console.log("Track received:", event);
     setRemoteStream(event.streams[0]);
+    console.log("Remote audio stream: ", event.streams[0].getAudioTracks()[0]);
   };
 
   useEffect(() => {

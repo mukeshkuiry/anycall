@@ -1,15 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
 import { motion } from "framer-motion";
-import { useSocket } from "../providers/Socket";
+import { useRouter } from "next/navigation";
 
 type Props = {};
 
 const JoinCard = (props: Props) => {
-  const { handleConnection, setJoined } = useSocket();
-
+  const router = useRouter();
   const handleJoin = () => {
-    handleConnection();
-    setJoined(true);
+    router.push("/stranger");
   };
 
   return (
@@ -42,12 +40,12 @@ const JoinCard = (props: Props) => {
         <img
           src="https://blog.placeit.net/wp-content/uploads/2021/03/mockup-of-a-pro-gamer-wearing-a-t-shirt.png"
           alt="User 1"
-          className="h-40 md:h-96 rounded-lg mb-3 md:mb-0"
+          className="h-40 md:h-80 rounded-lg mb-3 md:mb-0"
         />
         <img
           src="https://i.vimeocdn.com/video/907019718-e4b2a9638c0b1b2d4591a09d6da2f465e6bfa50b8291b3323cd799ffe8249c2b-d_640x360.jpg"
           alt="User 2"
-          className="h-40 md:h-96 rounded-lg"
+          className="h-40 md:h-80 rounded-lg"
         />
       </div>
 

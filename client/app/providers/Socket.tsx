@@ -96,7 +96,7 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
         socket.send(JSON.stringify(_msg));
         return true;
       }
-      console.log("Socket not initialized");
+      console.error("Socket not initialized");
       return false;
     },
     [randomId, socket]
@@ -104,7 +104,7 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
 
   const handleReceiveAnswer = useCallback(
     async (answer: RTCSessionDescriptionInit) => {
-      console.log("Received answer:", answer);
+      // console.log("Received answer:", answer);
       await setRemoteDescription(answer);
     },
     [setRemoteDescription]
@@ -113,7 +113,7 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
   const handleCreateOffer = useCallback(async () => {
     if (socket) {
       const offer = await createOffer();
-      console.log("Offer:", offer);
+      // console.log("Offer:", offer);
       const msg: IMessage = {
         type: "offer",
         senderId: randomId,
@@ -142,9 +142,9 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
 
   const handleReceiveOffer = useCallback(
     async (offer: RTCSessionDescriptionInit) => {
-      console.log("Received offer:", offer);
+      // console.log("Received offer:", offer);
       const answer = await createAnswer(offer);
-      console.log("Answer:", answer);
+      // console.log("Answer:", answer);
       const msg: IMessage = {
         type: "answer",
         senderId: randomId,
@@ -162,33 +162,37 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
       peer.close();
       setPeer(null);
       window.location.reload();
-      console.log("Connection closed");
+      // console.log("Connection closed");
     }
   }, [socket, peer, setPeer]);
 
   const handleMessages = useCallback(
     async (event: MessageEvent) => {
-      if (socket) {
-        const data: IMessage = JSON.parse(event.data);
-        console.log("Received message:", data);
-        if (data.type === "message") setMessages((prev) => [...prev, data]);
-        else if (data.type === "join") {
-          setPeerJoined(true);
-        } else if (data.type === "send offer") {
-          setICanSendOffer(true);
-          handleCreateOffer();
-        } else if (data.type === "offer") {
-          handleReceiveOffer(JSON.parse(data.content));
-        } else if (data.type === "answer") {
-          handleReceiveAnswer(JSON.parse(data.content));
-        } else if (data.type === "leave") {
-          if (peer) peer.close();
-          setJoined(false);
-          setPeerJoined(false);
-          setICanSendOffer(false);
-          setMessages([]);
-          handleCloseConnection();
+      try {
+        if (socket) {
+          const data: IMessage = JSON.parse(event.data);
+          // console.log("Received message:", data);
+          if (data.type === "message") setMessages((prev) => [...prev, data]);
+          else if (data.type === "join") {
+            setPeerJoined(true);
+          } else if (data.type === "send offer") {
+            setICanSendOffer(true);
+            handleCreateOffer();
+          } else if (data.type === "offer") {
+            handleReceiveOffer(JSON.parse(data.content));
+          } else if (data.type === "answer") {
+            handleReceiveAnswer(JSON.parse(data.content));
+          } else if (data.type === "leave") {
+            if (peer) peer.close();
+            setJoined(false);
+            setPeerJoined(false);
+            setICanSendOffer(false);
+            setMessages([]);
+            handleCloseConnection();
+          }
         }
+      } catch (error) {
+        console.error("Error parsing message:", error);
       }
     },
     [

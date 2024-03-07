@@ -1,6 +1,7 @@
 // ChatBox.tsx
 import { useEffect, useRef, useState } from "react";
 import { useSocket } from "../providers/Socket";
+import { useRouter } from "next/navigation";
 type Props = {};
 
 const ChatBox = (props: Props) => {
@@ -36,6 +37,7 @@ const ChatBox = (props: Props) => {
     }
   };
 
+  const router = useRouter();
   const handleNew = () => {
     window.location.reload();
   };
@@ -66,14 +68,17 @@ const ChatBox = (props: Props) => {
     <div className="flex flex-col h-full backdrop-blur-sm bg-[#ffffff10] p-4 ml-8 rounded-xl">
       <audio ref={notificationRef} src={"/notification.mp3"} />{" "}
       {/* Notification sound */}
-      <div className="flex-grow overflow-y-auto p-8 custom-scrollbar" ref={chatBoxRef}>
+      <div
+        className="flex-grow overflow-y-auto p-8 custom-scrollbar"
+        ref={chatBoxRef}
+      >
         <div>
           {!peerJoined ? (
-            <h1 className="text-xl text-yellow-500 text-center">
+            <h1 className=" text-yellow-500 text-center">
               Waiting for any stranger to join...
             </h1>
           ) : (
-            <h1 className="text-xl text-yellow-500 text-center">
+            <h1 className=" text-yellow-500 text-center">
               Someone joined, you can start chatting...
             </h1>
           )}
@@ -93,7 +98,7 @@ const ChatBox = (props: Props) => {
                 randomId === msg.senderId
                   ? "bg-purple-500 rounded-l-full rounded-t-full"
                   : "bg-green-500 rounded-r-full rounded-t-full"
-              } text-white  px-6 p-3 max-w-xs text-xl`}
+              } text-white  px-5 py-1.5 max-w-xs `}
             >
               {msg.content}
             </div>
@@ -103,7 +108,7 @@ const ChatBox = (props: Props) => {
       <div className="flex justify-center p-4 gap-4">
         <button
           onClick={handleNew}
-          className="ml-2 px-4 py-2 bg-purple-500 text-white rounded-lg text-xl"
+          className="ml-2 px-4 py-2 bg-purple-500 text-white rounded-lg "
         >
           New
         </button>
@@ -119,12 +124,12 @@ const ChatBox = (props: Props) => {
               handleSendMessage();
             }
           }}
-          className="p-3 w-full rounded-lg border border-blue-500 outline-none text-xl"
+          className="p-2 w-full rounded-lg border border-blue-500 outline-none"
         />
         <button
           disabled={messages.length === 0}
           onClick={handleSendMessage}
-          className="ml-2 px-4 py-2 text-xl bg-purple-500 text-white rounded-lg"
+          className="ml-2 px-4 py-1  bg-purple-500 text-white rounded-lg"
         >
           Send
         </button>
