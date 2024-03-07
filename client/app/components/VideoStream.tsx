@@ -44,7 +44,6 @@ const VideoStream = () => {
               width="100%"
               height="100%"
               controls
-              className="rounded-xl"
             />
           )}
         </div>
@@ -58,6 +57,9 @@ const VideoStream = () => {
               height="100%"
               className="rounded-xl"
               muted
+              style={{
+                transform: "rotateY(180deg)",
+              }}
             />
           )}
         </div>

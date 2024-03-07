@@ -41,6 +41,9 @@ const VideoStreamPhone = ({ myStream, remoteStream }: Props) => {
                 width="100%"
                 height="100%"
                 className="rounded-full"
+                style={{
+                  transform: "rotateY(180deg)",
+                }}
               />
             )}
           </div>
