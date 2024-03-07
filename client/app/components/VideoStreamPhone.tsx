@@ -1,7 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPhone } from "@fortawesome/free-solid-svg-icons";
 import ReactPlayer from "react-player";
-import AnycallNavbar from "./Navbar";
 
 type Props = {
   myStream: MediaStream | null;
@@ -14,7 +13,6 @@ const VideoStreamPhone = ({ myStream, remoteStream }: Props) => {
   };
   return (
     <div className="h-[calc(100vh-4rem)] w-full flex flex-col justify-between items-center relative bg-black">
-      <AnycallNavbar />
       <div className="h-full">
         {remoteStream ? (
           <ReactPlayer
