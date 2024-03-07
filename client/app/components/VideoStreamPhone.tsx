@@ -13,14 +13,14 @@ const VideoStreamPhone = ({ myStream, remoteStream }: Props) => {
   };
   return (
     <div className="h-[calc(100vh-8rem)] w-full flex flex-col justify-between items-center relative bg-black">
-      <div className="h-full">
+      <div className="h-full ">
         {remoteStream ? (
           <ReactPlayer
             playing
             url={remoteStream}
             width="100%"
             controls
-            height="calc(100% - 5rem)"
+            height="calc(100% - 8rem)"
             className="rounded-t-lg"
           />
         ) : (
@@ -47,7 +47,7 @@ const VideoStreamPhone = ({ myStream, remoteStream }: Props) => {
         </div>
         <div className="flex items-center space-x-4">
           <button
-            className="flex items-center px-4 py-2 bg-purple-500 text-white rounded-lg"
+            className="flex items-center px-4 py-2 bg-purple-500 text-white rounded-lg cursor-pointer"
             onClick={handleNewCall}
           >
             <FontAwesomeIcon icon={faPhone} size="lg" />
