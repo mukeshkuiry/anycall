@@ -15,6 +15,11 @@ interface IWebRTCContext {
   ) => Promise<RTCSessionDescriptionInit | undefined>;
   setRemoteDescription: (answer: RTCSessionDescriptionInit) => Promise<void>;
   sendTracks: (stream: MediaStream) => Promise<void>;
+  pauseVideoTracks: () => void;
+  resumeVideoTracks: () => void;
+  pauseAudioTracks: () => void;
+  resumeAudioTracks: () => void;
+
   remoteStream: MediaStream | null;
 }
 
@@ -33,6 +38,10 @@ const defaultWebRTCContext: IWebRTCContext = {
   sendTracks: async () => {
     return;
   },
+  pauseVideoTracks: () => {},
+  resumeVideoTracks: () => {},
+  pauseAudioTracks: () => {},
+  resumeAudioTracks: () => {},
   remoteStream: null,
 };
 
@@ -105,8 +114,39 @@ export const WebRTCProvider: FC<Props> = ({ children }: Props) => {
     }
   };
 
+  const pauseVideoTracks = () => {
+    peer?.getSenders().forEach((sender) => {
+      if (sender.track?.kind === "video") {
+        sender.track.enabled = false;
+      }
+    });
+  };
+
+  const resumeVideoTracks = () => {
+    peer?.getSenders().forEach((sender) => {
+      if (sender.track?.kind === "video") {
+        sender.track.enabled = true;
+      }
+    });
+  };
+
+  const pauseAudioTracks = () => {
+    peer?.getSenders().forEach((sender) => {
+      if (sender.track?.kind === "audio") {
+        sender.track.enabled = false;
+      }
+    });
+  };
+
+  const resumeAudioTracks = () => {
+    peer?.getSenders().forEach((sender) => {
+      if (sender.track?.kind === "audio") {
+        sender.track.enabled = true;
+      }
+    });
+  };
+
   const sendTracks = async (stream: MediaStream) => {
-    console.log("No of tracks: " + stream.getTracks());
     stream.getTracks().forEach((track) => {
       peer?.addTrack(track, stream);
     });
@@ -114,7 +154,6 @@ export const WebRTCProvider: FC<Props> = ({ children }: Props) => {
 
   const handleTrackEvent = (event: RTCTrackEvent) => {
     setRemoteStream(event.streams[0]);
-    console.log("Remote audio stream: ", event.streams[0].getAudioTracks()[0]);
   };
 
   useEffect(() => {
@@ -132,6 +171,10 @@ export const WebRTCProvider: FC<Props> = ({ children }: Props) => {
     createAnswer,
     setRemoteDescription,
     sendTracks,
+    pauseAudioTracks,
+    resumeAudioTracks,
+    pauseVideoTracks,
+    resumeVideoTracks,
     remoteStream,
   };
   return (

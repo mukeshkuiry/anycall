@@ -27,6 +27,8 @@ interface ISocketContext {
   randomId: string;
   peerJoined: boolean;
   setPeerJoined: React.Dispatch<React.SetStateAction<boolean>>;
+  remoteAudio: boolean;
+  remoteVideo: boolean;
 }
 
 const defaultSocketContext: ISocketContext = {
@@ -40,6 +42,8 @@ const defaultSocketContext: ISocketContext = {
   randomId: "",
   peerJoined: false,
   setPeerJoined: () => {},
+  remoteAudio: true,
+  remoteVideo: true,
 };
 
 const SocketContext = createContext<ISocketContext>(defaultSocketContext);
@@ -59,6 +63,8 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
   );
   const [peerJoined, setPeerJoined] = useState<boolean>(false);
   const [iCanSendOffer, setICanSendOffer] = useState<boolean>(false);
+  const [remoteAudio, setRemoteAudio] = useState<boolean>(true);
+  const [remoteVideo, setRemoteVideo] = useState<boolean>(true);
 
   const {
     peer,
@@ -66,7 +72,6 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
     createOffer,
     createAnswer,
     setRemoteDescription,
-    remoteStream,
   } = useWebRTC();
 
   const handleConnection = useCallback(() => {
@@ -171,24 +176,46 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
       try {
         if (socket) {
           const data: IMessage = JSON.parse(event.data);
-          // console.log("Received message:", data);
-          if (data.type === "message") setMessages((prev) => [...prev, data]);
-          else if (data.type === "join") {
-            setPeerJoined(true);
-          } else if (data.type === "send offer") {
-            setICanSendOffer(true);
-            handleCreateOffer();
-          } else if (data.type === "offer") {
-            handleReceiveOffer(JSON.parse(data.content));
-          } else if (data.type === "answer") {
-            handleReceiveAnswer(JSON.parse(data.content));
-          } else if (data.type === "leave") {
-            if (peer) peer.close();
-            setJoined(false);
-            setPeerJoined(false);
-            setICanSendOffer(false);
-            setMessages([]);
-            handleCloseConnection();
+          console.log("Received message:", data);
+          switch (data.type) {
+            case "message":
+              setMessages((prev) => [...prev, data]);
+              break;
+            case "join":
+              setPeerJoined(true);
+              break;
+            case "send offer":
+              setICanSendOffer(true);
+              handleCreateOffer();
+              break;
+            case "offer":
+              handleReceiveOffer(JSON.parse(data.content));
+              break;
+            case "answer":
+              handleReceiveAnswer(JSON.parse(data.content));
+              break;
+            case "leave":
+              if (peer) peer.close();
+              setJoined(false);
+              setPeerJoined(false);
+              setICanSendOffer(false);
+              setMessages([]);
+              handleCloseConnection();
+              break;
+            case "video pause":
+              setRemoteVideo(false);
+              break;
+            case "video resume":
+              setRemoteVideo(true);
+              break;
+            case "audio pause":
+              setRemoteAudio(false);
+              break;
+            case "audio resume":
+              setRemoteAudio(true);
+              break;
+            default:
+              break;
           }
         }
       } catch (error) {
@@ -235,6 +262,8 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
     randomId,
     peerJoined,
     setPeerJoined,
+    remoteAudio,
+    remoteVideo,
   };
 
   return (
