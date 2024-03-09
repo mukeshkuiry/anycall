@@ -111,30 +111,28 @@ const TempVideo = () => {
       <AnycallNavbar />
       <div className="flex justify-center items-center m-4 h-[calc(100%-12rem)] relative bg-[#26242cbc] backdrop-blur-xl rounded-xl">
         {remoteStream && remoteVideo ? (
-          <div className="">
-            <ReactPlayer
-              playing
-              url={remoteStream}
-              muted
-              width="100%"
-              height={"100%"}
-              style={{
-                objectFit: "cover",
-                outline: "none",
-              }}
-            />
-          </div>
+          <ReactPlayer
+            playing
+            url={remoteStream}
+            muted
+            width="100%"
+            height={"100%"}
+            style={{
+              objectFit: "cover",
+              outline: "none",
+            }}
+          />
         ) : (
           <div className="flex flex-col justify-center items-center">
             <Avatar type="stranger" size="large" />
           </div>
         )}
-        <div className="absolute  right-8 bottom-8">
+        <div className="absolute right-4 bottom-6  lg:right-8 lg:bottom-8">
           {myStream ? (
             <ReactPlayer
               playing={video}
               url={myStream}
-              width={220}
+              width={window.innerWidth > 768 ? "200px" : "100px"}
               height={"auto"}
               muted
               style={{
@@ -173,7 +171,6 @@ const TempVideo = () => {
           <MdAddCall />
         </button>
       </div>
-      u
     </div>
   );
 };

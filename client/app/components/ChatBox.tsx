@@ -55,7 +55,7 @@ const ChatBox = (props: Props) => {
   }, [messages, randomId]);
 
   return (
-    <div className="flex flex-col w-[35vw] h-[calc(100%-2rem)] bg-[#FEFCFF] p-4 m-4 rounded-xl">
+    <div className=" hidden lg:flex flex-col w-[35vw] h-[calc(100%-2rem)] bg-[#FEFCFF] p-4 m-4 rounded-xl">
       <audio ref={notificationRef} src={"/notification.mp3"} />{" "}
       <div className="flex justify-between items-center mb-3">
         <h1 className="text-2xl font-bold">Chats</h1>
@@ -63,7 +63,7 @@ const ChatBox = (props: Props) => {
           <IoMdClose />
         </button>
       </div>
-      {/* Notification sound */}
+      I{/* Notification sound */}
       <div
         className="flex-grow overflow-y-auto p-2 custom-scrollbar"
         ref={chatBoxRef}

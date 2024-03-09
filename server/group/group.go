@@ -18,6 +18,13 @@ func HandleGroupConnection(w http.ResponseWriter, r *http.Request) {
 	// get room id from url
 	roomID := r.URL.Query().Get("room_id")
 
+	if roomID == "" {
+		log.Println("Room ID is required")
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Room ID is required"))
+		return
+	}
+
 	// create room if not exists
 	if models.GroupConnectionRooms[roomID] == nil {
 		models.GroupConnectionRooms[roomID] = &models.Room{

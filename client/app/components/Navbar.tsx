@@ -4,7 +4,7 @@ const AnycallNavbar = () => {
     window.location.href = "/";
   };
   return (
-    <nav className="bg-purple-900 lg:bg-black w-full flex justify-between items-center h-20">
+    <nav className="bg-purple-900 lg:bg-black w-full flex justify-between items-center h-20 pl-4 lg:pl-0">
       <div className="flex items-center cursor-pointer" onClick={handleHome}>
         <img
           src="https://dl.memuplay.com/new_market/img/com.video.mini.icon.2021-03-18-21-22-39.png"

@@ -93,6 +93,24 @@ func handlePeerMessages(conn *websocket.Conn) {
 		} else if message.Type == "message" {
 			handlePeerMessage(conn, message)
 		}
+		if message.Type == "video pause" || message.Type == "video resume" || message.Type == "audio pause" || message.Type == "audio resume" {
+			messageToOpponentOnly(conn, message)
+		}
+	}
+}
+
+func messageToOpponentOnly(conn *websocket.Conn, message models.Message) {
+	room := findPeerConnectionRoom(conn)
+
+	// broadcast to the room
+	for client := range room.Clients {
+		if client != conn {
+			err := client.WriteJSON(message)
+			if err != nil {
+				log.Println(err)
+				return
+			}
+		}
 	}
 }
 

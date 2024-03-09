@@ -14,9 +14,9 @@ const Join = (props: Props) => {
   }, [handleConnection]);
 
   return (
-    <div className="flex max-h-screen h-screen w-screen bg-black overflow-hidden pl-16">
+    <div className="flex max-h-screen h-screen w-screen bg-black overflow-hidden lg:pl-16">
       <TempVideo />
-      <ChatBox />
+        <ChatBox />
     </div>
   );
 };
