@@ -24,6 +24,7 @@ const TempVideo = () => {
   const [myStream, setMyStream] = useState<MediaStream | null>(null);
   const [audio, setAudio] = useState<boolean>(true);
   const [video, setVideo] = useState<boolean>(true);
+  const [audioPlaying, setAudioPlaying] = useState<boolean>(false);
 
   useEffect(() => {
     const getMediaStream = async () => {
@@ -108,10 +109,19 @@ const TempVideo = () => {
     if (remoteAudio && remoteStream) {
       const audio = new Audio();
       audio.srcObject = remoteStream;
-      console.log(audio);
       audio.play();
+      audio.onplaying = () => {
+        setAudioPlaying(true);
+      };
+
+      audio.onended = () => {
+        setAudioPlaying(false);
+      };
     }
   }, [remoteAudio, remoteStream]);
+
+
+  console.log("audioPlaying", audioPlaying);
 
   return (
     <div className="w-full h-full">
@@ -139,11 +149,11 @@ const TempVideo = () => {
           </div>
         )}
         <div className="absolute right-4 bottom-6  lg:right-8 lg:bottom-8">
-          {myStream ? (
+          {myStream && video ? (
             <ReactPlayer
               playing={video}
               url={myStream}
-              width={window.innerWidth > 768 ? "200px" : "100px"}
+              width={window.innerWidth > 768 ? "250px" : "100px"}
               height={"auto"}
               muted
               style={{
@@ -153,7 +163,10 @@ const TempVideo = () => {
               }}
             />
           ) : (
-            <div className="flex flex-col justify-center items-center">
+            <div
+              style={{ boxShadow: "0 0 10px 5px rgba(0, 0, 0, 0.5)" }}
+              className="flex pt-2 justify-center items-center w-[100px] h-[140px] lg:w-[250px] bg-gray-800"
+            >
               <Avatar size="small" type="user" />
             </div>
           )}

@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useSocket } from "../providers/Socket";
 import TempVideo from "../components/TempVideo";
 import ChatBox from "../components/ChatBox";
+import { nextImageLoaderRegex } from "next/dist/build/webpack-config";
 
 type Props = {};
 
@@ -31,6 +32,7 @@ const Join = (props: Props) => {
         }
       } catch (error) {
         console.log("Error in full screen", error);
+        return nextImageLoaderRegex;
       }
     };
     goFullScreen();

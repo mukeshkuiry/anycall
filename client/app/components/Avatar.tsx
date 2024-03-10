@@ -20,7 +20,12 @@ const Avatar = (props: Props) => {
         {props.type === "waiting" ? <FiPhoneOutgoing /> : <BiUser />}
       </div>
 
-      <p className="text-gray-500 text-3xl">
+      <p
+        className={` text-gray-500
+      ${props.size === "small" ? "text-xl" : "text-3xl"}
+      
+      `}
+      >
         {props.type === "stranger"
           ? "Stranger"
           : props.type === "user"
