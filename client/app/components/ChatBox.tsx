@@ -63,7 +63,7 @@ const ChatBox = (props: Props) => {
           <IoMdClose />
         </button>
       </div>
-      I{/* Notification sound */}
+      {/* Notification sound */}
       <div
         className="flex-grow overflow-y-auto p-2 custom-scrollbar"
         ref={chatBoxRef}
