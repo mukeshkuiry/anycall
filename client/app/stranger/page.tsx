@@ -16,17 +16,21 @@ const Join = (props: Props) => {
   // go to browser full screen mode
   useEffect(() => {
     const goFullScreen = () => {
-      const elem = document.documentElement;
-      if (elem.requestFullscreen) {
-        elem.requestFullscreen();
-      } else if ((elem as any).webkitRequestFullscreen) {
-        (elem as any).webkitRequestFullscreen();
-      } else if ((elem as any).mozRequestFullScreen) {
-        (elem as any).mozRequestFullScreen();
-      } else if ((elem as any).msRequestFullscreen) {
-        (elem as any).msRequestFullscreen();
-      } else {
-        console.log("Fullscreen not supported");
+      try {
+        const elem = document.documentElement;
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        } else if ((elem as any).webkitRequestFullscreen) {
+          (elem as any).webkitRequestFullscreen();
+        } else if ((elem as any).mozRequestFullScreen) {
+          (elem as any).mozRequestFullScreen();
+        } else if ((elem as any).msRequestFullscreen) {
+          (elem as any).msRequestFullscreen();
+        } else {
+          console.log("Fullscreen not supported");
+        }
+      } catch (error) {
+        console.log("Error in full screen", error);
       }
     };
     goFullScreen();
