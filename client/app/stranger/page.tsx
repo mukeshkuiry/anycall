@@ -13,10 +13,29 @@ const Join = (props: Props) => {
     handleConnection();
   }, [handleConnection]);
 
+  // go to browser full screen mode
+  useEffect(() => {
+    const goFullScreen = () => {
+      const elem = document.documentElement;
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if ((elem as any).webkitRequestFullscreen) {
+        (elem as any).webkitRequestFullscreen();
+      } else if ((elem as any).mozRequestFullScreen) {
+        (elem as any).mozRequestFullScreen();
+      } else if ((elem as any).msRequestFullscreen) {
+        (elem as any).msRequestFullscreen();
+      } else {
+        console.log("Fullscreen not supported");
+      }
+    };
+    goFullScreen();
+  }, []);
+
   return (
     <div className="flex max-h-screen h-screen w-screen bg-black overflow-hidden lg:pl-16">
       <TempVideo />
-        <ChatBox />
+      <ChatBox />
     </div>
   );
 };
