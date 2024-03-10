@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { useSocket } from "../providers/Socket";
 import TempVideo from "../components/TempVideo";
 import ChatBox from "../components/ChatBox";
-import { nextImageLoaderRegex } from "next/dist/build/webpack-config";
 
 type Props = {};
 
@@ -16,23 +15,14 @@ const Join = (props: Props) => {
 
   // go to browser full screen mode
   useEffect(() => {
-    const goFullScreen = () => {
+    const goFullScreen = async () => {
       try {
         const elem = document.documentElement;
-        if (elem.requestFullscreen) {
-          elem.requestFullscreen();
-        } else if ((elem as any).webkitRequestFullscreen) {
-          (elem as any).webkitRequestFullscreen();
-        } else if ((elem as any).mozRequestFullScreen) {
-          (elem as any).mozRequestFullScreen();
-        } else if ((elem as any).msRequestFullscreen) {
-          (elem as any).msRequestFullscreen();
-        } else {
-          console.log("Fullscreen not supported");
+        if (elem && elem.requestFullscreen) {
+          await elem.requestFullscreen();
         }
       } catch (error) {
         console.log("Error in full screen", error);
-        return nextImageLoaderRegex;
       }
     };
     goFullScreen();

@@ -131,7 +131,7 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
   useEffect(() => {
     if (peer) {
       peer.onnegotiationneeded = () => {
-        console.log("Negotiation needed");
+        // console.log("Negotiation needed");
         if (iCanSendOffer && peer.connectionState !== "connected") {
           handleCreateOffer();
         }

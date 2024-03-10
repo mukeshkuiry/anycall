@@ -121,7 +121,6 @@ const TempVideo = () => {
   }, [remoteAudio, remoteStream]);
 
 
-  console.log("audioPlaying", audioPlaying);
 
   return (
     <div className="w-full h-full">
